@@ -1,0 +1,22 @@
+import { List, Datagrid, TextField, ReferenceField } from 'react-admin';
+import { useCompetition } from "./CompetitionContext";
+export const VehiculeHasCompetitionList = () => {
+    const { competitionId } = useCompetition();
+    return(
+        <List
+      filter={{ competitionId }} // filtre automatiquement selon la compétition choisie
+      perPage={25}
+    >
+        <Datagrid rowClick="edit">
+            <TextField source="id" />
+            <ReferenceField source="vehiculeId" reference="vehicules" >
+                <TextField source="nom" />
+            </ReferenceField>
+            <ReferenceField source="competitionId" reference="competitions" >
+                <TextField source="nom" />
+            </ReferenceField>
+            {/* <ReferenceField source="conformiteId" reference="conformites" /> */}
+        </Datagrid>
+    </List>
+);
+};

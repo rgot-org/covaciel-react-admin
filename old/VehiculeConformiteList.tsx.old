@@ -1,0 +1,146 @@
+import {
+    useDataProvider,
+    useNotify,
+    useRedirect,
+    SaveButton,
+    SimpleForm,
+    TextInput,
+    ReferenceInput,
+    SelectInput,
+    useRecordContext,
+    useListContext,
+    Edit,
+    useRefresh,
+  } from "react-admin";
+  import { useEffect, useState } from "react";
+  import { Card, CardContent, Typography, Box, Grid } from "@mui/material";
+  
+  const EditableConformite = ({ conformite }: { conformite: any }) => {
+    const record = useRecordContext();
+    const dataProvider = useDataProvider();
+    const refresh = useRefresh();
+    const notify = useNotify();
+  
+    const [formData, setFormData] = useState({
+      observation: conformite?.observation || "",
+      id_commissaire: conformite?.id_commissaire || "",
+    });
+  
+    const handleSave = async () => {
+      try {
+        await dataProvider.update("conformite", {
+          id: conformite.id,
+          data: formData,
+        });
+        notify("Conformité mise à jour");
+        refresh();
+      } catch (error) {
+        notify("Erreur lors de la mise à jour", { type: "warning" });
+      }
+    };
+  
+    return (
+      <Box mt={1}>
+        <Grid container spacing={2} alignItems="center">
+          <Grid item xs={6}>
+            <TextInput
+              label="Observation"
+              source="observation"
+              value={formData.observation}
+              onChange={(e) =>
+                setFormData({ ...formData, observation: e.target.value })
+              }
+              fullWidth
+            />
+          </Grid>
+          <Grid item xs={4}>
+            <ReferenceInput
+              label="Commissaire"
+              source="id_commissaire"
+              reference="commissaires"
+              fullWidth
+              defaultValue={formData.id_commissaire}
+            >
+              <SelectInput
+                optionText="nom"
+                onChange={(e) =>
+                  setFormData({
+                    ...formData,
+                    id_commissaire: parseInt(e.target.value),
+                  })
+                }
+              />
+            </ReferenceInput>
+          </Grid>
+          <Grid item xs={2}>
+            <SaveButton onClick={handleSave} />
+          </Grid>
+        </Grid>
+      </Box>
+    );
+  };
+  
+  export const VehiculeConformiteList = () => {
+    const [records, setRecords] = useState<any[]>([]);
+    const dataProvider = useDataProvider();
+  
+    useEffect(() => {
+      const fetchData = async () => {
+        const { data: vehicules } = await dataProvider.getList("vehicules", {
+          pagination: { page: 1, perPage: 100 },
+          sort: { field: "id", order: "ASC" },
+          filter: {},
+        });
+  
+        const withRelations = await Promise.all(
+          vehicules.map(async (vehicule: any) => {
+            const equipe = await dataProvider.getOne("equipes", {
+              id: vehicule.equipeId,
+            });
+            const lycee = await dataProvider.getOne("lycees", {
+              id: equipe.data.lyceeId,
+            });
+            const conformiteList = await dataProvider.getList("conformite", {
+              filter: { id: vehicule.id },
+              pagination: { page: 1, perPage: 1 },
+              sort: { field: "id", order: "ASC" },
+            });
+  
+            return {
+              ...vehicule,
+              equipe: equipe.data,
+              lycee: lycee.data,
+              conformite: conformiteList.data[0] || null,
+            };
+          })
+        );
+  
+        setRecords(withRelations);
+      };
+  
+      fetchData();
+    }, [dataProvider]);
+  
+    return (
+      <Box p={3}>
+        {records.map((vehicule) => (
+          <Card key={vehicule.id} sx={{ mb: 2 }}>
+            <CardContent>
+              <Typography variant="h6">
+                {vehicule.nom} — {vehicule.equipe.nom} ({vehicule.lycee.nom})
+              </Typography>
+  
+              {vehicule.conformite ? (
+                <EditableConformite conformite={vehicule.conformite} />
+              ) : (
+                <Typography color="textSecondary" mt={1}>
+                  Aucune conformité enregistrée
+                </Typography>
+              )}
+            </CardContent>
+          </Card>
+        ))}
+      </Box>
+    );
+  };
+  

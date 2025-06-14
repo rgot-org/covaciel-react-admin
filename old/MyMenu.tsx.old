@@ -1,0 +1,22 @@
+import { Menu } from 'react-admin';
+import DirectionsCarIcon from '@mui/icons-material/DirectionsCar';
+import BuildIcon from '@mui/icons-material/Build';
+
+export const MyMenu = () => (
+  <Menu>
+    {/* Menu classique avec les ressources */}
+    <Menu.ResourceItem name="commissaires" />
+    <Menu.ResourceItem name="competitions" />
+    <Menu.ResourceItem name="vehicules" />
+    <Menu.ResourceItem name="conformites" />
+    <Menu.ResourceItem name="qualifications" />
+    <Menu.ResourceItem name="grille_depart" />
+
+    {/* Lien vers la page personnalisée */}
+    <Menu.Item
+      to="/vehicules-conformite"
+      primaryText="Véhicules & Conformité"
+      leftIcon={<BuildIcon />}
+    />
+  </Menu>
+);
