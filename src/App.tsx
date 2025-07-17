@@ -6,7 +6,7 @@ import {
   CustomRoutes,
   Layout,
 } from "react-admin";
-
+import { customTheme } from "./utils/theme";
 import treeqlProvider from "ra-data-treeql";
 import { VehiculeList, VehiculeEdit, VehiculeCreate } from "./vehicules";
 import { EquipeList, EquipeEdit, EquipeCreate } from "./equipes";
@@ -54,12 +54,14 @@ export const App = () => (
   <CompetitionProvider>
     <Admin
       dataProvider={treeqlProvider(
-        "http://192.168.6.37:8080/dataprovider/api.php", // sur le NAS
+         //"http://192.168.6.37:8080/dataprovider/api.php", // sur le NAS
+        "/dataprovider/api.php"
       )}
       layout={CustomLayout}
       menu={CustomMenu}
       dashboard={DashboardRedirect} // ici !
-      //authProvider={authProvider}
+      authProvider={authProvider}
+      theme={customTheme}
     >
       <Resource
         name="vehicules"
@@ -111,6 +113,7 @@ export const App = () => (
         list={QualificationList}
          edit={QualificationEdit}
         create={QualificationCreate}
+        options={{ label: "Qualifications" }}
         // show={QualificationShow}
       />
       <Resource
@@ -119,6 +122,7 @@ export const App = () => (
         edit={GrilleDepartEdit}
         create={GrilleDepartCreate}
         show={GrilleDepartShow}
+        options={{ label: "Grille de départ" }}
       />
       <Resource
         name="conformite"

@@ -54,7 +54,8 @@ export const CourseSelectInput = ({
   }, [grilles]);
 
   const availableCourses = useMemo(() => {
-    return allCourses.filter((c: any) => !usedCourseIds.includes(c.id));
+    //return allCourses.filter((c: any) => !usedCourseIds.includes(c.id));
+    return allCourses;
   }, [allCourses, usedCourseIds]);
 
   const handleChange = (event: React.ChangeEvent<{ value: unknown }>) => {
@@ -68,12 +69,13 @@ export const CourseSelectInput = ({
   }
 
   return (
-    <FormControl sx={{ width: 300 }}>
-      <InputLabel id="course-select-label">{label}</InputLabel>
+    <FormControl size="small" sx={{ width: 300 }}>
+      <InputLabel id="course-select-label" >{label}</InputLabel>
       <Select
         labelId="course-select-label"
         value={selected ?? ""}
         onChange={handleChange}
+        size="small"
       >
         {availableCourses.map((course: any) => (
           <MenuItem key={course.id} value={course.id}>

@@ -2,7 +2,7 @@
 const authProvider = {
   login: ({ username, password }) => {
     // Appel API à ton backend pour vérifier les identifiants
-    if (username === "admin" && password === "password") {
+    if (username === "admin" && password === "covaciel@2025") {
       localStorage.setItem("role", "admin");
       return Promise.resolve();
     }

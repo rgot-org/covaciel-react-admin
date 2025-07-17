@@ -61,8 +61,12 @@ export const CustomToolbar = () => {
       notify(`${resource} ${isEdit ? "mis à jour" : "créé"} avec succès`, {
         type: "success",
       });
-      //redirect(`/${resource}`);
-      redirect("/vehicules");
+      if (resource === "qualifications" || resource === "conformite") {
+        redirect("/vehicules");
+      } else {
+        redirect(`/${resource}`);
+      }
+      //
     };
 
     const onError = (error: any) => {
@@ -81,10 +85,12 @@ export const CustomToolbar = () => {
 
   return (
     <Toolbar>
-      <SaveButton onClick={(e) => {
+      <SaveButton
+        onClick={(e) => {
           e.preventDefault(); // ← empêche le comportement natif
           handleSave();
-        }} />
+        }}
+      />
     </Toolbar>
   );
 };

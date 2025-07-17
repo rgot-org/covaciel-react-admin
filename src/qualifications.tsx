@@ -29,15 +29,16 @@ import {
 
 import { CustomTopToolbar } from "./utils/CustomTopToolbar";
 import { CustomTimeInput } from "./utils/CustomTimeInput";
+import { CustomToolbar } from "./utils/CustomToolBar";
 
-const CustomToolbar = () => {
-  return (
-    <Toolbar sx={{ display: "flex", justifyContent: "space-between" }}>
-      <SaveButton />
-      <DeleteButton mutationMode="pessimistic" redirect="/vehicules" />
-    </Toolbar>
-  );
-};
+// const CustomToolbar = () => {
+//   return (
+//     <Toolbar sx={{ display: "flex", justifyContent: "space-between" }}>
+//       <SaveButton />
+//       <DeleteButton mutationMode="pessimistic" redirect="/vehicules" />
+//     </Toolbar>
+//   );
+// };
 const validateTime = [
   required("Champ requis"),
   regex(/^00:[0-5]\d:[0-5]\d$/, "Format invalide. Utilisez m:ss (ex: 1:30)"),
@@ -120,7 +121,7 @@ export const QualificationEdit = () => {
         <NumberInput source="reussite" validate={required("Champ requis !")} />
         <TextInput source="commentaire" />
         <ReferenceInput source="commissaireId" reference="commissaires">
-          <SelectInput optionText="nom" validate={required("Champ requis !")} />
+          <SelectInput optionText="nom"  />
         </ReferenceInput>
       </SimpleForm>
     </Edit>

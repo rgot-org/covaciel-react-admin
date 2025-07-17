@@ -40,8 +40,12 @@ export const ConformiteCell = () => {
   if (hasConformite === null || !record) return null;
 
   return (
-    <IconButtonWithTooltip label="Conformité" onClick={handleClick}>
-      {hasConformite ? <ThumbUpIcon /> : <AddIcon />}
-    </IconButtonWithTooltip>
+<IconButtonWithTooltip label="Conformité" onClick={handleClick}>
+  {hasConformite ? (
+    <ThumbUpIcon sx={{ color: '#321479' }} />
+  ) : (
+    <AddIcon sx={{ color: '#321479' }} />
+  )}
+</IconButtonWithTooltip>
   );
 };

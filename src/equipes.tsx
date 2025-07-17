@@ -1,4 +1,4 @@
-import { Datagrid, List, ReferenceField, TextField } from "react-admin";
+import { Datagrid, InfiniteList, List, ReferenceField, TextField } from "react-admin";
 import { CustomTopToolbar } from "./utils/CustomTopToolbar";
 import {
   Edit,
@@ -8,6 +8,7 @@ import {
   SelectInput,
   Create,
 } from "react-admin";
+import { CustomToolbar } from "./utils/CustomToolBar";
 
 export const EquipeEdit = () => (
   <Edit
@@ -15,7 +16,7 @@ export const EquipeEdit = () => (
     actions={<CustomTopToolbar resource="equipes" />}
     mutationMode="pessimistic" // demande confirmation à la suppression
   >
-    <SimpleForm>
+    <SimpleForm toolbar={<CustomToolbar />}>
       <TextInput source="id" disabled /> {/* facultatif pour la modification */}
       <TextInput source="nom" label="Nom de l'équipe" />
       <ReferenceInput source="lyceeId" reference="lycees" label="Lycée">
@@ -36,7 +37,7 @@ export const EquipeCreate = () => (
   </Create>
 );
 export const EquipeList = () => (
-  <List>
+  <InfiniteList>
     <Datagrid bulkActionButtons={false}>
       <TextField source="id" />
       <TextField source="nom" />
@@ -57,5 +58,5 @@ export const EquipeList = () => (
         <TextField source="academie" />
       </ReferenceField>
     </Datagrid>
-  </List>
+  </InfiniteList>
 );

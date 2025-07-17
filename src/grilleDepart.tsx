@@ -32,8 +32,12 @@ import {
 } from "@mui/material";
 import { useCompetition } from "./utils/CompetitionContext";
 import { CustomToolbar } from "./utils/CustomToolBar";
+import { useLocation } from "react-router-dom";
+import { CustomTopToolbar } from "./utils/CustomTopToolbar";
 
 export const GrilleDepartList = () => {
+  const location = useLocation();
+  const courseId = location.state?.record?.courseId || null;
   const dataProvider = useDataProvider();
   const notify = useNotify();
   const [courses, setCourses] = useState([]);
@@ -87,7 +91,7 @@ export const GrilleDepartList = () => {
     <Box p={2}>
       <Box display="flex" alignItems="center" gap={2} mb={2} p={2}>
         <Typography variant="h6">Course :</Typography>
-        <FormControl sx={{ width: 300, mb: 2 }}>
+        <FormControl size ="small" sx={{ width: 300, mb: 2 }}>
           <InputLabel>Course</InputLabel>
           <Select
             label="Course"
@@ -105,7 +109,7 @@ export const GrilleDepartList = () => {
       {selectedCourseId && (
         <>
           {/* <Box mb={2}> */}
-          <Button onClick={handleClick}>Supprimer la grille</Button>
+          {/* <Button onClick={handleClick}>Supprimer la grille</Button>
           <Confirm
             isOpen={open}
             // loading={isPending}
@@ -113,41 +117,80 @@ export const GrilleDepartList = () => {
             content="Etes-vous sûr de supprimer cette grille ?"
             onConfirm={handleConfirm}
             onClose={handleDialogClose}
-          />
+          /> */}
           {/* </Box> */}
-          <Box display="flex" justifyContent="center">
-            <Box width="800px">
-              <ListBase
-                key={key}
-                resource="grille_depart"
-                filter={{ courseId: selectedCourseId }}
-                perPage={100}
-                sort={{ field: "position_depart", order: "ASC" }}
+          {/* <Box display="flex" justifyContent="center">
+            <Box > */}
+          <ListBase
+            key={key}
+            resource="grille_depart"
+            filter={{ courseId: selectedCourseId }}
+            perPage={100}
+            sort={{ field: "position_depart", order: "ASC" }}
+          >
+            <Datagrid
+              bulkActionButtons={false}
+              rowClick="edit"
+              rowStyle={(record, index) => ({
+                backgroundColor: index % 2 === 0 ? "#D7BBF5" : "#EDE4FF", // bleu clair / rose clair
+              })}
+            >
+              <ReferenceField
+                source="vehiculeId"
+                reference="vehicules"
+                label="Num."
+                link={false}
               >
-                <Datagrid bulkActionButtons={false} rowClick="edit">
-                  <ReferenceField
-                    source="vehiculeId"
-                    reference="vehicules"
-                    label="Véhicule"
-                    link={false}
-                  >
-                    <TextField source="nom" />
-                  </ReferenceField>
-                  <NumberField
-                    source="position_depart"
-                    label="Position départ"
-                  />
-                  {/* <NumberField source="distance_parcourue" label="Réussite (%)" />
+                <TextField
+                  source="numero"
+                  sx={{
+                    textTransform: "uppercase",
+                    color: "#321479",
+                    fontWeight: 600,
+                  }}
+                />
+              </ReferenceField>
+              <ReferenceField
+                source="vehiculeId"
+                reference="vehicules"
+                label="Véhicule"
+                link={false}
+              >
+                <TextField
+                  source="nom"
+                  sx={{
+                    textTransform: "uppercase",
+                    color: "#321479",
+                    fontWeight: 600,
+                  }}
+                />
+              </ReferenceField>
+
+              <NumberField
+                source="position_depart"
+                label="Position départ"
+                sx={{
+                  textTransform: "uppercase",
+                  color: "#321479",
+                  fontWeight: 600,
+                }}
+              />
+              {/* <NumberField source="distance_parcourue" label="Réussite (%)" />
               <NumberField source="temps_course" label="Temps" /> */}
 
-                  <NumberField
-                    source="position_arrivee"
-                    label="Position arrivée"
-                  />
-                </Datagrid>
-              </ListBase>
-            </Box>
-          </Box>
+              <NumberField
+                source="position_arrivee"
+                label="Position arrivée"
+                sx={{
+                  textTransform: "uppercase",
+                  color: "#321479",
+                  fontWeight: 600,
+                }}
+              />
+            </Datagrid>
+          </ListBase>
+          {/* </Box>
+          </Box> */}
         </>
       )}
     </Box>
@@ -155,8 +198,11 @@ export const GrilleDepartList = () => {
 };
 
 export const GrilleDepartEdit = () => (
-  <Edit>
-    <SimpleForm>
+  <Edit
+    redirect="grille_depart"
+    actions={<CustomTopToolbar resource="grille_depart" />}
+  >
+    <SimpleForm toolbar={<CustomToolbar />}>
       <ReferenceField source="courseId" reference="courses" link={false}>
         Course : <TextField label="Course" source="nom" sx={{ fontSize: 24 }} />
       </ReferenceField>
@@ -171,13 +217,13 @@ export const GrilleDepartEdit = () => (
       <NumberInput source="position_arrivee" />
 
       <SelectInput
-  source="abandon"
-  label="Statut"
-  choices={[
-    { id: 1, name: 'Disqualification' },
-    { id: 2, name: 'Abandon' },
-  ]}
-/>
+        source="abandon"
+        label="Statut"
+        choices={[
+          { id: 1, name: "Disqualification" },
+          { id: 2, name: "Abandon" },
+        ]}
+      />
 
       <ReferenceInput source="commissaire_id" reference="commissaires">
         <SelectInput
@@ -185,7 +231,6 @@ export const GrilleDepartEdit = () => (
           // validate={required("Champ requis !")}
         />
       </ReferenceInput>
-      <CustomToolbar />
     </SimpleForm>
   </Edit>
 );

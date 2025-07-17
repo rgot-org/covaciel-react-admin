@@ -1,9 +1,5 @@
 // CustomMenu.tsx
-import {
-  Menu,
-  useResourceDefinitions,
-  useSidebarState,
-} from "react-admin";
+import { Menu, useResourceDefinitions, useSidebarState } from "react-admin";
 import { Collapse, ListItemIcon, ListItemText, List } from "@mui/material";
 import SettingsIcon from "@mui/icons-material/Settings";
 import SchoolIcon from "@mui/icons-material/School";
@@ -15,24 +11,31 @@ import ScoreboardSharpIcon from "@mui/icons-material/ScoreboardSharp";
 import MilitaryTechSharpIcon from "@mui/icons-material/MilitaryTechSharp";
 import SportsIcon from "@mui/icons-material/Sports";
 import ThumbUpIcon from "@mui/icons-material/ThumbUp";
-
+import { TiArrowLoop } from "react-icons/ti";
 import EmojiEventsIcon from "@mui/icons-material/EmojiEvents";
 import { useState, useEffect } from "react";
 import { DirectionsCar } from "@mui/icons-material";
 
 export const CustomMenu = () => {
   const resources = useResourceDefinitions();
-  const [open, setOpen] = useState(false);
-  // const [sidebarOpen, setSidebarOpen] = useSidebarState();
+  // const [open, setOpen] = useState(false) || false;
+  // // const [sidebarOpen, setSidebarOpen] = useSidebarState();
 
-  // useEffect(() => {
-  //   if (sidebarOpen) {
-  //     setSidebarOpen(false); // Force la sidebar repliée
-  //   }
-  // }, [sidebarOpen, setSidebarOpen]);
+  // // useEffect(() => {
+  // //   if (sidebarOpen) {
+  // //     setSidebarOpen(false); // Force la sidebar repliée
+  // //   }
+  // // }, [sidebarOpen, setSidebarOpen]);
 
   const toggleConfig = () => setOpen(!open);
+  const [open, setOpen] = useSidebarState();
 
+  // Replie le menu au démarrage
+  useEffect(() => {
+    if (open) {
+      setOpen(false);
+    }
+  }, [open, setOpen]);
   return (
     <Menu>
       <Menu.Item
@@ -58,7 +61,11 @@ export const CustomMenu = () => {
             primaryText="Équipes"
             leftIcon={<GroupIcon />}
           />
-          <Menu.Item to="/courses" primaryText="Courses" />
+          <Menu.Item
+            to="/courses"
+            primaryText="Courses"
+            leftIcon={<TiArrowLoop />}
+          />
           <Menu.Item
             to="/commissaires"
             primaryText="Commissaires"
@@ -82,7 +89,6 @@ export const CustomMenu = () => {
         primaryText="Grille départ"
         leftIcon={<SportsScoreIcon />}
       />
-
     </Menu>
   );
 };

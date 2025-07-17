@@ -58,8 +58,25 @@ export const QualificationCell = ({ seanceId, seanceLabel }: Props) => {
     return (
       <Tooltip title={`Modifier qualification - ${seanceLabel}`}>
         <Link underline="hover" component="button" onClick={handleCreateClick}>
+          {/* <Typography variant="body2" align="center">
+            {scoreData.horaire.slice(0, 5)} - {Number(scoreData.score).toFixed(2)} 
+          </Typography> */}
+          {/* <>
+  <Typography variant="body2" align="center">
+    {scoreData.horaire.slice(0, 5)}
+  </Typography>
+  <Typography variant="body2" align="center" fontWeight="bold">
+    {Number(scoreData.score).toFixed(2)}
+  </Typography>
+</> */}
           <Typography variant="body2" align="center">
-            {Number(scoreData.score).toFixed(2)}
+            <span style={{ color: "#888" }}>
+              {scoreData.horaire.slice(0, 5)}
+            </span>
+            {" -  "}
+            <span style={{ fontWeight: "bold", color: "#3f51b5" }}>
+              {Number(scoreData.score).toFixed(2)}
+            </span>
           </Typography>
         </Link>
       </Tooltip>

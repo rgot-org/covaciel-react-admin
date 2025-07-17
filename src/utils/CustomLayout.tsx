@@ -9,6 +9,6 @@ export const CustomLayout = (props: any) => (
     sx={{ mt: 3 }}
     appBar={CustomAppBar}
     menu={CustomMenu}
-    defaultOpen={true} // 👈 Ajout important
+    defaultOpen={false} // 👈 Ajout important
   />
 );

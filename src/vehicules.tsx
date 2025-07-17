@@ -31,11 +31,13 @@ import {
   TopToolbar,
   FunctionField,
   NumberInput,
+  ListBase,
 } from "react-admin";
 
 import { useState, useEffect } from "react";
 import { useCompetition } from "./utils/CompetitionContext";
 import { CustomTopToolbar } from "./utils/CustomTopToolbar";
+import { useMediaQuery, Theme, Box } from "@mui/material";
 
 import { useNavigate } from "react-router-dom";
 
@@ -54,6 +56,7 @@ import { QualificationCell } from "./utils/QualificationCell";
 import { ConformiteCell } from "./utils/ConformiteCell";
 import { useLocation } from "react-router";
 import { SelectEquipeWithLycee } from "./utils/SelectEquipeWithLycee";
+import { CustomToolbar } from "./utils/CustomToolBar";
 const ManualRefreshButton = () => {
   const { setFilters, filterValues } = useListContext();
 
@@ -95,7 +98,16 @@ export const VehiculeList = () => {
   const location = useLocation();
   const refresh = useRefresh();
   const { competitionId } = useCompetition();
+  const isSmall = useMediaQuery((theme: Theme) => theme.breakpoints.down("sm"));
+  //const refresh = useRefresh();
 
+  useEffect(() => {
+    const interval = setInterval(() => {
+      refresh();
+    }, 10000); // 10 000 ms = 10 secondes
+
+    return () => clearInterval(interval); // Nettoyage à la sortie
+  }, [refresh]);
   const {
     data: seances,
     isLoading,
@@ -112,38 +124,139 @@ export const VehiculeList = () => {
   if (error || !seances) return <Error />;
 
   return (
-    <InfiniteList
+    <Box pt={5} px={2}>
+    <ListBase perPage={25}
       disableAuthentication
       filter={competitionId ? { competitionId } : {}}
-      actions={<VehiculeListActions />}
+      // actions={<VehiculeListActions />}
     >
-      <Datagrid bulkActionButtons={false}>
-        {/* <TextField source="id" /> */}
-        <TextField source="numero"></TextField>
-        <TextField source="nom" />
+      {isSmall ? (
+        <Datagrid
+          bulkActionButtons={false}
+          rowClick={false}
+          rowStyle={(record, index) => ({
+            backgroundColor: index % 2 === 0 ? "#D7BBF5" : "#EDE4FF", // bleu clair / rose clair
+          })}
+        >
+          {/* <TextField source="id" /> */}
+          <TextField
+            source="numero"
+            label="Num"
+          ></TextField>
+          {/* <TextField
+            source="nom"
+          /> */}
+          <ReferenceOneField reference="conformite" target="id" label="Conf.">
+            <span style={{ color: "#888" }}>
+              <FunctionField
+                label="Horaire"
+                render={(record) => {
+                  if (!record.horaire) return "";
+                  return record.horaire.slice(0, 5); // "HH:mm:ss" → "HH:mm"
+                }}
+              />
+            </span>
+            <ConformiteCell label="Conformité" />
+          </ReferenceOneField>
 
-        <ReferenceOneField reference="conformite" target="id" label="Conformité">
-          <FunctionField
-            label="Horaire"
-            render={(record) => {
-              if (!record.horaire) return "";
-              return record.horaire.slice(0, 5); // "HH:mm:ss" → "HH:mm"
+          {seances.map((seance: any) => (
+            <QualificationCell
+              label={`Q${seance.numero}`}
+              key={seance.id}
+              seanceId={seance.id}
+              seanceLabel={`Q${seance.numero}`}
+            />
+          ))}
+        </Datagrid>
+      ) : (
+        <Datagrid
+          bulkActionButtons={false}
+          rowStyle={(record, index) => ({
+            backgroundColor: index % 2 === 0 ? "#D7BBF5" : "#EDE4FF", // bleu clair / rose clair
+          })}
+          rowClick={false}
+        >
+          {/* <TextField source="id" /> */}
+          <TextField
+            source="numero"
+            label="Numéro"
+          ></TextField>
+          <TextField
+            source="nom"
+          />
+          <ReferenceOneField
+            reference="conformite"
+            target="id"
+            label="Conformité"
+          >
+            <span style={{ color: "#888" }}>
+              <FunctionField
+                label="Horaire"
+                render={(record) => {
+                  if (!record.horaire) return "";
+                  return record.horaire.slice(0, 5); // "HH:mm:ss" → "HH:mm"
+                }}
+              />
+            </span>
+            <ConformiteCell label="Conformité" />
+          </ReferenceOneField>
+          <ReferenceOneField reference="conformite" target="id" label="Dim">
+            <FunctionField              
+              render={(record) => {
+                if (record.dimension==null) return ""; 
+                return (record?.dimension ? "✅" : "❌")
+              }}
+            />
+          </ReferenceOneField>
+          <ReferenceOneField reference="conformite" target="id" label="$GO;">
+            <FunctionField
+              render={(record) => {
+                if (record.topDepart==null) return ""; 
+                return (record?.topDepart ? "✅" : "❌")
+              }}
+            />
+          </ReferenceOneField>
+          <ReferenceOneField
+            reference="conformite"
+            target="id"
+            label="N. Furtif"
+          >
+            <FunctionField
+              render={(record) => {
+                if (record.nonFurtif==null) return ""; 
+                return (record?.nonFurtif ? "✅" : "❌")
+              }}
+            />
+          </ReferenceOneField>
+          <ReferenceOneField reference="conformite" target="id" label="M. AV">
+            <FunctionField
+              render={(record) => {
+                if (record.marcheAvant==null) return ""; 
+                return (record?.marcheAvant ? "✅" : "❌")
+              }}
+            />
+          </ReferenceOneField>
+          <ReferenceOneField reference="conformite" target="id" label="M. AR">
+            <FunctionField
+             render={(record) => {
+              if (record.marcheArriere==null) return ""; 
+              return (record?.marcheArriere ? "✅" : "❌")
             }}
-          />
- <ConformiteCell label="Conformité" />
-        </ReferenceOneField>
+            />
+          </ReferenceOneField>
 
-        {seances.map((seance: any) => (
-          <QualificationCell
-            label={`Q${seance.numero}`}
-            key={seance.id}
-            seanceId={seance.id}
-            seanceLabel={`Q${seance.numero}`}
-          />
-        ))}
-      
-      </Datagrid>
-    </InfiniteList>
+          {seances.map((seance: any) => (
+            <QualificationCell
+              label={`Qualif ${seance.numero}`}
+              key={seance.id}
+              seanceId={seance.id}
+              seanceLabel={`Q${seance.numero}`}
+            />
+          ))}
+        </Datagrid>
+      )}
+    </ListBase>
+    </Box>
   );
 };
 
@@ -153,13 +266,14 @@ export const VehiculeEdit = () => (
     actions={<CustomTopToolbar resource="vehicules" />}
     mutationMode="pessimistic" // demande confirmation à la suppression
   >
-    <SimpleForm>
+    <SimpleForm toolbar={<CustomToolbar />}>
       <TextInput source="id" readOnly={true} />
-      <NumberInput source="numero"/>
+      <NumberInput source="numero" />
       <TextInput source="nom" />
-      <ReferenceInput source="equipeId" reference="equipes">
+      {/* <ReferenceInput source="equipeId" reference="equipes">
         <SelectInput optionText="nom" />
-      </ReferenceInput>
+      </ReferenceInput> */}
+      <SelectEquipeWithLycee source="equipeId" label="Équipe" />
       <ReferenceInput source="competitionId" reference="competitions">
         <SelectInput optionText="nom" />
       </ReferenceInput>

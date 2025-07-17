@@ -62,7 +62,7 @@ import {
 import { Toolbar, Typography } from "@mui/material";
 import { useEffect } from "react";
 import { useCompetition } from "./CompetitionContext";
-
+import { logo } from "./public/faux_logo.png";
 export const CustomAppBar = () => {
   const { competitionId, setCompetitionId } = useCompetition();
 
@@ -100,7 +100,7 @@ export const CustomAppBar = () => {
           CoVACIEL
           {competition && ` — ${competition.annee} - ${competition.lieu}`}
         </Typography>
-        <TitlePortal variant="h5" sx={{ flex: 1 }} />
+        <TitlePortal  />
       </Toolbar>
     </AppBar>
   );

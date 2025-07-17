@@ -55,7 +55,7 @@ export const ConformiteEdit = () => (
     actions={<CustomTopToolbar resource="vehicules" />}
     mutationMode="pessimistic" // demande confirmation à la suppression
   >
-    <SimpleForm>
+    <SimpleForm toolbar={<CustomToolbar />}>
       <ReferenceField
         label="Véhicule"
         source="id"
